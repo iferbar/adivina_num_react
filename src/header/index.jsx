@@ -1,12 +1,12 @@
 import './style.css';
-function header() {
+function Header() {
   return (
     <header>
       <h1> Guess My Number!</h1>
-      <p class="between">(Between 1 and 20)</p>
-      <div class="number">?</div>
+      <p className="between">(Between 1 and 20)</p>
+      <div className="number">?</div>
     </header>
   );
 }
 
-export default header;
+export default Header;

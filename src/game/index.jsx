@@ -1,28 +1,46 @@
+import Scoreboard from '../scoreboard';
 import './style.css';
-function game() {
+import { useState, useRef, useEffect } from 'react';
+
+const secretNumber = Math.trunc(Math.random() * 20) + 1;
+
+function Game() {
+  const [score, setScore] = useState(20);
+  const [highscore, setHighscore] = useState(0);
+  const inputRef = useRef(null);
+  const [guessNumber, setGuessNumber] = useState(null);
+
+  const handleCheck = () => setGuessNumber(Number(inputRef.current.value));
+
+  useEffect(() => {
+    if (guessNumber !== null && guessNumber !== secretNumber) {
+      //disminuimos el score
+      setScore(score - 1);
+    }
+  }, [guessNumber]);
+
   return (
     <main>
-      <button class="btn again">Again!</button>
-      <section class="left">
+      <button className="btn again">Again!</button>
+      <section className="left">
         {/* AÑADIDO PARA INTENTOS ANTERIORES  */}
-        <p class="attempts">
-          Attempts: <span class="attempts-list">None</span>
+        <p className="attempts">
+          Attempts: <span className="attempts-list">None</span>
         </p>
         {/*  FIN AÑADIDO PARA INTENTOS ANTERIORES*/}
-        <input type="number" class="guess" />
-        <button class="btn check">Check!</button>
+        <input type="number" className="guess" ref={inputRef} />
+        <button className="btn check" onClick={handleCheck}>
+          Check!
+        </button>
       </section>
-      <section class="right">
-        <p class="message">Start guessing...</p>
-        <p class="label-score">
-          💯 Score: <span class="score">20</span>
-        </p>
-        <p class="label-highscore">
-          🥇 Highscore: <span class="highscore">0</span>
-        </p>
-      </section>
+      <Scoreboard
+        score={score}
+        highscore={highscore}
+        secretNumber={secretNumber}
+        guessNumber={guessNumber}
+      />
     </main>
   );
 }
 
-export default game;
+export default Game;
