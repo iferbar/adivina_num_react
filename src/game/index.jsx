@@ -10,14 +10,36 @@ function Game() {
   const inputRef = useRef(null);
   const [guessNumber, setGuessNumber] = useState(null);
 
-  const handleCheck = () => setGuessNumber(Number(inputRef.current.value));
+  // const handleCheck = () => {
+  //   si el valor es igual al anterior,el score tambien deberia desminuirse
+  //   if (guessNumber === Number(inputRef.current.value)) {
+  //     setScore((prev) => prev - 1);
+  //   }
+  //   setGuessNumber(Number(inputRef.current.value));
+  // };
+  // useEffect(() => {
+  //   if (guessNumber !== null && guessNumber !== secretNumber) {
+  //     disminuimos el score
+  //     setScore((prev) => prev - 1);
+  //   } else if (guessNumber === secretNumber) {
+  //     if (score > highscore) {
+  //       setHighscore(score);
+  //     }
+  //   }
+  // }, [guessNumber]);
 
-  useEffect(() => {
-    if (guessNumber !== null && guessNumber !== secretNumber) {
-      //disminuimos el score
-      setScore(score - 1);
+  const handleCheck = () => {
+    const value = Number(inputRef.current.value);
+
+    if (!value || value < 1 || value > 20) return;
+
+    setGuessNumber(value);
+
+    if (value !== secretNumber) {
+      setScore((prev) => Math.max(prev - 1, 0));
     }
-  }, [guessNumber]);
+    setHighscore((prevHighscore) => Math.max(prevHighscore, score));
+  };
 
   return (
     <main>
