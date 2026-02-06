@@ -1,25 +1,40 @@
 import Scoreboard from '../scoreboard';
 import './style.css';
-import { useState, useRef, useEffect } from 'react';
-
-const secretNumber = Math.trunc(Math.random() * 20) + 1;
+import { useState, useRef } from 'react';
 
 function Game() {
   const [score, setScore] = useState(20);
   const [highscore, setHighscore] = useState(0);
-  const inputRef = useRef(null);
   const [guessNumber, setGuessNumber] = useState(null);
+  const [secretNumber, setSecretNumber] = useState(
+    () => Math.trunc(Math.random() * 20) + 1,
+  );
+  const inputRef = useRef(null);
 
-  // const handleCheck = () => {
-  //   si el valor es igual al anterior,el score tambien deberia desminuirse
-  //   if (guessNumber === Number(inputRef.current.value)) {
-  //     setScore((prev) => prev - 1);
-  //   }
-  //   setGuessNumber(Number(inputRef.current.value));
-  // };
+  const handleNewGame = () => {
+    setScore(20);
+    setGuessNumber(null);
+    inputRef.current.value = '';
+    inputRef.current.focus();
+    setSecretNumber(Math.trunc(Math.random() * 20) + 1);
+  };
+
+  //asincrono para que sea simultanea la ejecucion y tienes los datos necesarios en el handlecheck
+  //no se usa un useffect porque seria sincrono y seria una tras otra
+  const handleCheck = () => {
+    const inputNumber = Number(inputRef.current.value);
+    setGuessNumber(inputNumber);
+    // si el valor es igual al anterior,el score tambien deberia desminuirse
+    if (inputNumber !== secretNumber) {
+      setScore((prev) => prev - 1);
+    } else {
+      setHighscore(score);
+    }
+  };
+
   // useEffect(() => {
   //   if (guessNumber !== null && guessNumber !== secretNumber) {
-  //     disminuimos el score
+  //     // disminuimos el score
   //     setScore((prev) => prev - 1);
   //   } else if (guessNumber === secretNumber) {
   //     if (score > highscore) {
@@ -28,22 +43,11 @@ function Game() {
   //   }
   // }, [guessNumber]);
 
-  const handleCheck = () => {
-    const value = Number(inputRef.current.value);
-
-    if (!value || value < 1 || value > 20) return;
-
-    setGuessNumber(value);
-
-    if (value !== secretNumber) {
-      setScore((prev) => Math.max(prev - 1, 0));
-    }
-    setHighscore((prevHighscore) => Math.max(prevHighscore, score));
-  };
-
   return (
     <main>
-      <button className="btn again">Again!</button>
+      <button className="btn again" onClick={handleNewGame}>
+        Again!
+      </button>
       <section className="left">
         {/* AÑADIDO PARA INTENTOS ANTERIORES  */}
         <p className="attempts">
